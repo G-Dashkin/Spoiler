@@ -29,7 +29,9 @@ fun AppNavigation() {
         composable<SearchRoute> {
             SearchScreen(
                 onSpoilClicked = { query, category ->
-                    navController.navigate(ResultRoute(query, category?.label))
+                    navController.navigate(ResultRoute(query, category?.label)){
+                        launchSingleTop = true
+                    }
                 },
             )
         }
