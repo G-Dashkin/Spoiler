@@ -24,3 +24,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Spoiler"
 include(":app")
+include(":core:di")
+include(":core:ui")
+include(":core:network")
+include(":core:utils")
+include(":feature:search")
+include(":feature:result")
