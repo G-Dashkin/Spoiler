@@ -1,9 +1,16 @@
 package com.dashkin.spoiler.feature.search.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +19,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -32,12 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dashkin.spoiler.core.ui.theme.SpoilerTheme
+import com.dashkin.spoiler.feature.search.domain.model.Category
 
 @Composable
 fun SearchScreen(
-    onSpoilClicked: (String) -> Unit = {},
+    onSpoilClicked: (query: String, category: Category?) -> Unit = { _, _ -> },
 ) {
     var query by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
     Box(
         modifier = Modifier
@@ -55,11 +67,26 @@ fun SearchScreen(
             Spacer(modifier = Modifier.height(8.dp))
             SearchInput(
                 query = query,
-                onQueryChange = { query = it },
+                onQueryChange = {
+                    query = it
+                    if (it.isBlank()) selectedCategory = null
+                },
             )
+            AnimatedVisibility(
+                visible = query.isNotBlank(),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically(),
+            ) {
+                CategoryChips(
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { category ->
+                        selectedCategory = if (selectedCategory == category) null else category
+                    },
+                )
+            }
             SpoilButton(
                 enabled = query.isNotBlank(),
-                onClick = { onSpoilClicked(query) },
+                onClick = { onSpoilClicked(query, selectedCategory) },
             )
         }
     }
@@ -144,6 +171,40 @@ private fun SpoilButton(
                 letterSpacing = 3.sp,
             ),
         )
+    }
+}
+
+@Composable
+private fun CategoryChips(
+    selectedCategory: Category?,
+    onCategorySelected: (Category) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Category.entries.forEach { category ->
+            FilterChip(
+                selected = selectedCategory == category,
+                onClick = { onCategorySelected(category) },
+                label = { Text(category.label) },
+                shape = RoundedCornerShape(8.dp),
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.Transparent,
+                    labelColor = Color.White.copy(alpha = 0.6f),
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = selectedCategory == category,
+                    borderColor = Color.White.copy(alpha = 0.25f),
+                    selectedBorderColor = Color.Transparent,
+                ),
+            )
+        }
     }
 }
 
