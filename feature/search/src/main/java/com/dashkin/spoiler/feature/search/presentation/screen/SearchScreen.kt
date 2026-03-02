@@ -72,10 +72,6 @@ fun SearchScreen(
                     if (it.isBlank()) selectedCategory = null
                 },
             )
-            SpoilButton(
-                enabled = query.isNotBlank(),
-                onClick = { onSpoilClicked(query, selectedCategory) },
-            )
             AnimatedVisibility(
                 visible = query.isNotBlank(),
                 enter = fadeIn() + expandVertically(),
@@ -88,6 +84,10 @@ fun SearchScreen(
                     },
                 )
             }
+            SpoilButton(
+                enabled = query.isNotBlank(),
+                onClick = { onSpoilClicked(query, selectedCategory) },
+            )
         }
     }
 }
