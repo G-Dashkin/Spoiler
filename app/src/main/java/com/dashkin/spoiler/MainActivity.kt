@@ -6,7 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.dashkin.spoiler.core.ui.theme.SpoilerTheme
-import com.dashkin.spoiler.feature.search.presentation.screen.SearchScreen
+import com.dashkin.spoiler.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             SpoilerTheme {
-                SearchScreen()
+                AppNavigation()
             }
         }
     }
