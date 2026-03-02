@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.dashkin.spoiler.feature.history.presentation.screen.HistoryScreen
 import com.dashkin.spoiler.feature.result.presentation.screen.ResultScreen
 import com.dashkin.spoiler.feature.search.presentation.screen.SearchScreen
 import kotlinx.serialization.Serializable
@@ -18,6 +19,9 @@ private data class ResultRoute(
     val categoryLabel: String?,
 )
 
+@Serializable
+private data object HistoryRoute
+
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -29,7 +33,12 @@ fun AppNavigation() {
         composable<SearchRoute> {
             SearchScreen(
                 onSpoilClicked = { query, category ->
-                    navController.navigate(ResultRoute(query, category?.label)){
+                    navController.navigate(ResultRoute(query, category?.label)) {
+                        launchSingleTop = true
+                    }
+                },
+                onHistoryClicked = {
+                    navController.navigate(HistoryRoute) {
                         launchSingleTop = true
                     }
                 },
@@ -42,6 +51,12 @@ fun AppNavigation() {
                 title = route.title,
                 categoryLabel = route.categoryLabel,
                 onNewSpoilerClicked = { navController.navigateUp() },
+            )
+        }
+
+        composable<HistoryRoute> {
+            HistoryScreen(
+                onBackClicked = { navController.navigateUp() },
             )
         }
     }

@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":feature:search"))
     implementation(project(":feature:result"))
+    implementation(project(":feature:history"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
