@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import com.dashkin.spoiler.feature.search.domain.model.Category
 @Composable
 fun SearchScreen(
     onSpoilClicked: (query: String, category: Category?) -> Unit = { _, _ -> },
+    onHistoryClicked: () -> Unit = {},
 ) {
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
@@ -89,6 +91,10 @@ fun SearchScreen(
                 onClick = { onSpoilClicked(query, selectedCategory) },
             )
         }
+        HistoryButton(
+            onClick = onHistoryClicked,
+            modifier = Modifier.align(Alignment.BottomEnd),
+        )
     }
 }
 
@@ -205,6 +211,25 @@ private fun CategoryChips(
                 ),
             )
         }
+    }
+}
+
+@Composable
+private fun HistoryButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier.padding(bottom = 8.dp),
+    ) {
+        Text(
+            text = "HISTORY",
+            style = MaterialTheme.typography.labelSmall.copy(
+                letterSpacing = 2.sp,
+                color = Color.White.copy(alpha = 0.2f),
+            ),
+        )
     }
 }
 
